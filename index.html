@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Endurance Timer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #F5C842;
+      --gold-dim: #C49A1A;
+      --gold-glow: rgba(245, 200, 66, 0.35);
+      --bg: #0A0A0F;
+      --surface: #12121A;
+      --surface2: #1A1A26;
+      --border: rgba(245, 200, 66, 0.15);
+      --text: #E8E0C8;
+      --text-dim: #8A8070;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* Radial ambient glow */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(ellipse, rgba(245, 200, 66, 0.04) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 0 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,200,66,0.05) inset;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Top bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+    }
+
+    .app-title {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .level-badge {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      background: rgba(245, 200, 66, 0.08);
+      border: 1px solid rgba(245, 200, 66, 0.2);
+      padding: 5px 14px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    /* Level title area */
+    .level-name {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(20px, 5vw, 28px);
+      font-weight: 700;
+      color: var(--gold);
+      text-align: center;
+      line-height: 1.2;
+      margin-bottom: 6px;
+      text-shadow: 0 0 30px var(--gold-glow);
+    }
+
+    .level-subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+    }
+
+    /* Divider */
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
+      margin: 0 auto 32px;
+    }
+
+    /* Progress section */
+    .progress-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+    }
+
+    .progress-label {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .progress-percent {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gold);
+      text-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 12px;
+      background: var(--surface2);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+      position: relative;
+      margin-bottom: 32px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #C49A1A, #F5C842, #FFE57A);
+      border-radius: 6px;
+      transition: width 1s linear;
+      position: relative;
+      min-width: 4px;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 20px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* Glow when 100% */
+    .progress-fill.complete {
+      box-shadow: 0 0 16px var(--gold-glow), 0 0 32px var(--gold-glow);
+      animation: pulseBar 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseBar {
+      0%, 100% { box-shadow: 0 0 12px var(--gold-glow); }
+      50% { box-shadow: 0 0 28px rgba(245,200,66,0.6); }
+    }
+
+    /* Countdown */
+    .countdown-label {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .countdown-value {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(16px, 4vw, 20px);
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+      letter-spacing: 0.05em;
+      margin-bottom: 36px;
+    }
+
+    .countdown-value span {
+      color: var(--gold);
+    }
+
+    /* Level Up button */
+    .btn-levelup {
+      width: 100%;
+      padding: 16px;
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #0A0A0F;
+      background: linear-gradient(135deg, #C49A1A, #F5C842, #FFE57A);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .btn-levelup:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(245, 200, 66, 0.4);
+    }
+
+    .btn-levelup:active {
+      transform: translateY(0);
+    }
+
+    .btn-levelup.pulse-ready {
+      animation: btnPulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes btnPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245,200,66,0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(245,200,66,0); }
+    }
+
+    .btn-levelup::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-levelup:hover::before {
+      left: 100%;
+    }
+
+    /* Start button */
+    .btn-start {
+      width: 100%;
+      padding: 18px;
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #0A0A0F;
+      background: linear-gradient(135deg, #C49A1A, #F5C842);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(245,200,66,0.4);
+    }
+
+    /* Start date */
+    .start-info {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
+    /* Decorative corners */
+    .corner {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-color: rgba(245,200,66,0.3);
+      border-style: solid;
+    }
+    .corner-tl { top: 14px; left: 14px; border-width: 1px 0 0 1px; }
+    .corner-tr { top: 14px; right: 14px; border-width: 1px 1px 0 0; }
+    .corner-bl { bottom: 14px; left: 14px; border-width: 0 0 1px 1px; }
+    .corner-br { bottom: 14px; right: 14px; border-width: 0 1px 1px 0; }
+
+    /* Confetti canvas */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* Fade in animation */
+    .fade-in {
+      animation: fadeIn 0.6s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* First time screen */
+    #screen-start .hero-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(22px, 5vw, 30px);
+      font-weight: 900;
+      color: var(--gold);
+      text-align: center;
+      text-shadow: 0 0 40px var(--gold-glow);
+      margin-bottom: 12px;
+    }
+    #screen-start .hero-sub {
+      font-size: 13px;
+      color: var(--text-dim);
+      text-align: center;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* Reset button */
+    .btn-reset {
+      background: none;
+      border: none;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: rgba(138,128,112,0.4);
+      cursor: pointer;
+      font-family: 'Cinzel', serif;
+      text-transform: uppercase;
+      text-align: center;
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      transition: color 0.2s;
+    }
+    .btn-reset:hover { color: rgba(138,128,112,0.8); }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="card fade-in">
+  <!-- Decorative corners -->
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <!-- SCREEN: First time -->
+  <div id="screen-start" class="screen">
+    <div class="top-bar" style="justify-content:center; margin-bottom:28px;">
+      <div class="app-title">Endurance Timer</div>
+    </div>
+    <div class="hero-title">Setiap Detik<br/>Adalah Kemenangan</div>
+    <div class="hero-sub">
+      Resistance sejati bukan tentang seberapa keras kamu berjuang —<br/>
+      tapi seberapa lama kamu bertahan.
+    </div>
+    <div class="divider"></div>
+    <div style="margin-bottom:32px;"></div>
+    <button class="btn-start" onclick="startTimer()">⚔ Mulai Endurance</button>
+  </div>
+
+  <!-- SCREEN: Main tracker -->
+  <div id="screen-main" class="screen">
+    <div class="top-bar">
+      <div class="app-title">Endurance Timer</div>
+      <div class="level-badge" id="level-badge">Level 1</div>
+    </div>
+
+    <div class="level-name" id="level-name">The First Stand</div>
+    <div class="level-subtitle" id="level-subtitle">3-Day Endurance</div>
+    <div class="divider"></div>
+
+    <div class="progress-label-row">
+      <div class="progress-label">Progress</div>
+      <div class="progress-percent" id="progress-percent">0%</div>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+
+    <div class="countdown-label" id="countdown-label">Waktu menuju Level berikutnya</div>
+    <div class="countdown-value" id="countdown-value">— Hari, — Jam, — Menit</div>
+
+    <button
+      class="btn-levelup"
+      id="btn-levelup"
+      style="display:none;"
+      onclick="levelUp()"
+    >
+      ✦ Claim Reward &amp; Level Up ✦
+    </button>
+
+    <div class="start-info" id="start-info"></div>
+    <button class="btn-reset" onclick="confirmReset()">· reset ·</button>
+  </div>
+
+</div>
+
+<script>
+  // ─── Config ───────────────────────────────────────────────
+  const LEVEL_DAYS = [3, 7, 14, 30, 60, 90, 180, 365];
+  const LEVEL_NAMES = [
+    "The First Stand",
+    "One Week Strong",
+    "The Fortnight Test",
+    "One Month Unbroken",
+    "Two Months of Steel",
+    "The Ninety Days",
+    "Half a Year",
+    "One Year. Reborn.",
+  ];
+
+  function getLevelDays(level) {
+    const idx = level - 1;
+    if (idx < LEVEL_DAYS.length) return LEVEL_DAYS[idx];
+    return 365 * (idx - LEVEL_DAYS.length + 2);
+  }
+
+  function getLevelName(level) {
+    const idx = level - 1;
+    if (idx < LEVEL_NAMES.length) return LEVEL_NAMES[idx];
+    return `Year ${idx - LEVEL_DAYS.length + 2}`;
+  }
+
+  // ─── State ────────────────────────────────────────────────
+  let currentLevel = parseInt(localStorage.getItem('et_level') || '1');
+  let startTimestamp = parseInt(localStorage.getItem('et_start') || '0');
+  let ticker = null;
+
+  // ─── Init ─────────────────────────────────────────────────
+  function init() {
+    if (!startTimestamp) {
+      showScreen('screen-start');
+    } else {
+      showScreen('screen-main');
+      renderMain();
+      startTicker();
+    }
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function startTimer() {
+    startTimestamp = Date.now();
+    currentLevel = 1;
+    save();
+    showScreen('screen-main');
+    renderMain();
+    startTicker();
+  }
+
+  function save() {
+    localStorage.setItem('et_level', currentLevel);
+    localStorage.setItem('et_start', startTimestamp);
+  }
+
+  // ─── Render ───────────────────────────────────────────────
+  function renderMain() {
+    const days = getLevelDays(currentLevel);
+    const name = getLevelName(currentLevel);
+
+    document.getElementById('level-badge').textContent = `Level ${currentLevel}`;
+    document.getElementById('level-name').textContent = name;
+    document.getElementById('level-subtitle').textContent = `${days}-Day Endurance`;
+
+    // Start date
+    const d = new Date(startTimestamp);
+    const opts = { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+    document.getElementById('start-info').textContent =
+      `Dimulai: ${d.toLocaleDateString('id-ID', opts)}`;
+
+    tick();
+  }
+
+  function startTicker() {
+    if (ticker) clearInterval(ticker);
+    ticker = setInterval(tick, 1000);
+  }
+
+  function tick() {
+    const days = getLevelDays(currentLevel);
+    const targetMs = days * 24 * 60 * 60 * 1000;
+    const elapsed = Date.now() - startTimestamp;
+    const raw = elapsed / targetMs;
+    const pct = Math.min(raw * 100, 100);
+
+    // Progress bar
+    document.getElementById('progress-fill').style.width = pct.toFixed(2) + '%';
+    document.getElementById('progress-percent').textContent = Math.floor(pct) + '%';
+
+    const fill = document.getElementById('progress-fill');
+    if (pct >= 100) {
+      fill.classList.add('complete');
+    } else {
+      fill.classList.remove('complete');
+    }
+
+    // Countdown
+    const remaining = Math.max(0, targetMs - elapsed);
+    if (remaining <= 0) {
+      document.getElementById('countdown-label').textContent = 'Level Up siap diklaim!';
+      document.getElementById('countdown-value').innerHTML =
+        '<span>0</span> Hari, <span>0</span> Jam, <span>0</span> Menit';
+    } else {
+      const rDays = Math.floor(remaining / (1000 * 60 * 60 * 24));
+      const rHours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const rMins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      document.getElementById('countdown-label').textContent = 'Waktu menuju Level berikutnya';
+      document.getElementById('countdown-value').innerHTML =
+        `<span>${rDays}</span> Hari, <span>${rHours}</span> Jam, <span>${rMins}</span> Menit`;
+    }
+
+    // Level Up button
+    const btn = document.getElementById('btn-levelup');
+    if (pct >= 100) {
+      btn.style.display = 'block';
+      btn.classList.add('pulse-ready');
+    } else {
+      btn.style.display = 'none';
+      btn.classList.remove('pulse-ready');
+    }
+  }
+
+  // ─── Level Up ─────────────────────────────────────────────
+  function levelUp() {
+    launchConfetti();
+    setTimeout(() => {
+      currentLevel++;
+      startTimestamp = Date.now();
+      save();
+      renderMain();
+    }, 400);
+  }
+
+  // ─── Reset ────────────────────────────────────────────────
+  function confirmReset() {
+    if (confirm('Reset semua progress? Timer akan mulai dari Level 1.')) {
+      clearInterval(ticker);
+      localStorage.removeItem('et_level');
+      localStorage.removeItem('et_start');
+      currentLevel = 1;
+      startTimestamp = 0;
+      showScreen('screen-start');
+    }
+  }
+
+  // ─── Confetti ─────────────────────────────────────────────
+  function launchConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#F5C842', '#FFE57A', '#C49A1A', '#FFFFFF', '#FFF0A0', '#E8D080'];
+    const particles = Array.from({ length: 120 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      w: Math.random() * 10 + 4,
+      h: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 3,
+      vy: Math.random() * 4 + 2,
+      angle: Math.random() * Math.PI * 2,
+      spin: (Math.random() - 0.5) * 0.2,
+      opacity: 1,
+    }));
+
+    let frame = 0;
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.angle += p.spin;
+        p.opacity -= 0.008;
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.opacity);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      });
+
+      frame++;
+      if (frame < 160) requestAnimationFrame(draw);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    draw();
+  }
+
+  // ─── Boot ─────────────────────────────────────────────────
+  init();
+</script>
+</body>
+</html>
