@@ -3,57 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Endurance Timer</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <title>Frequency Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --gold: #F5C842;
-      --gold-dim: #C49A1A;
-      --gold-glow: rgba(245, 200, 66, 0.35);
-      --bg: #0A0A0F;
-      --surface: #12121A;
-      --surface2: #1A1A26;
-      --border: rgba(245, 200, 66, 0.15);
-      --text: #E8E0C8;
-      --text-dim: #8A8070;
+      --bg:        #1C1814;
+      --surface:   #242018;
+      --surface2:  #2C2820;
+      --border:    rgba(200,180,140,0.12);
+      --border2:   rgba(200,180,140,0.22);
+      --text:      #D4C9B0;
+      --text-dim:  #7A7060;
+      --text-faint:#4A4438;
+      --accent:    #C8A96E;
+      --accent-dim:#8A7040;
+      --accent-glow: rgba(200,169,110,0.15);
+      --green:     #7AAF8A;
+      --green-bg:  rgba(122,175,138,0.12);
+      --green-border: rgba(122,175,138,0.3);
+      --red:       #B07070;
+      --red-bg:    rgba(176,112,112,0.12);
+      --red-border:rgba(176,112,112,0.3);
+      --empty:     rgba(200,180,140,0.06);
+      --empty-border: rgba(200,180,140,0.15);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg);
+      background: var(--bg);
       color: var(--text);
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      position: relative;
+      padding: 24px 16px;
     }
 
-    /* Grain overlay */
+    /* Subtle paper texture */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.4;
-    }
-
-    /* Radial ambient glow */
-    body::after {
-      content: '';
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(ellipse, rgba(245, 200, 66, 0.04) 0%, transparent 70%);
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
       pointer-events: none;
       z-index: 0;
     }
@@ -63,314 +56,373 @@
       z-index: 1;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 48px 44px;
+      border-radius: 16px;
+      padding: 36px 32px;
       width: 100%;
-      max-width: 520px;
-      box-shadow: 0 0 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,200,66,0.05) inset;
-      backdrop-filter: blur(10px);
+      max-width: 440px;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.5), 0 1px 0 rgba(200,180,140,0.06) inset;
     }
 
-    /* Top bar */
+    /* ── Top bar ── */
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 36px;
+      margin-bottom: 28px;
     }
-
     .app-title {
-      font-family: 'Cinzel', serif;
+      font-family: 'Lora', serif;
       font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.25em;
+      letter-spacing: 0.18em;
       color: var(--text-dim);
       text-transform: uppercase;
+      font-style: italic;
     }
-
-    .level-badge {
-      font-family: 'Cinzel', serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      color: var(--gold);
-      background: rgba(245, 200, 66, 0.08);
-      border: 1px solid rgba(245, 200, 66, 0.2);
-      padding: 5px 14px;
+    .fase-badge {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      background: var(--accent-glow);
+      border: 1px solid rgba(200,169,110,0.2);
+      padding: 3px 10px;
       border-radius: 20px;
       text-transform: uppercase;
     }
 
-    /* Level title area */
-    .level-name {
-      font-family: 'Cinzel Decorative', serif;
-      font-size: clamp(20px, 5vw, 28px);
-      font-weight: 700;
-      color: var(--gold);
-      text-align: center;
-      line-height: 1.2;
-      margin-bottom: 6px;
-      text-shadow: 0 0 30px var(--gold-glow);
-    }
-
-    .level-subtitle {
-      font-family: 'Cinzel', serif;
-      font-size: 12px;
-      letter-spacing: 0.2em;
-      color: var(--text-dim);
-      text-align: center;
-      text-transform: uppercase;
-      margin-bottom: 40px;
-    }
-
-    /* Divider */
-    .divider {
-      width: 60px;
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
-      margin: 0 auto 32px;
-    }
-
-    /* Progress section */
-    .progress-label-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 12px;
-    }
-
-    .progress-label {
-      font-family: 'Cinzel', serif;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      color: var(--text-dim);
-      text-transform: uppercase;
-    }
-
-    .progress-percent {
-      font-family: 'Cinzel Decorative', serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--gold);
-      text-shadow: 0 0 20px var(--gold-glow);
-    }
-
-    .progress-track {
-      width: 100%;
-      height: 12px;
-      background: var(--surface2);
-      border-radius: 6px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.04);
-      position: relative;
-      margin-bottom: 32px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #C49A1A, #F5C842, #FFE57A);
-      border-radius: 6px;
-      transition: width 1s linear;
-      position: relative;
-      min-width: 4px;
-    }
-
-    .progress-fill::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: 20px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
-      border-radius: 0 6px 6px 0;
-    }
-
-    /* Glow when 100% */
-    .progress-fill.complete {
-      box-shadow: 0 0 16px var(--gold-glow), 0 0 32px var(--gold-glow);
-      animation: pulseBar 2s ease-in-out infinite;
-    }
-
-    @keyframes pulseBar {
-      0%, 100% { box-shadow: 0 0 12px var(--gold-glow); }
-      50% { box-shadow: 0 0 28px rgba(245,200,66,0.6); }
-    }
-
-    /* Countdown */
-    .countdown-label {
-      font-family: 'Cinzel', serif;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    .countdown-value {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(16px, 4vw, 20px);
+    /* ── Phase header ── */
+    .phase-title {
+      font-family: 'Lora', serif;
+      font-size: clamp(18px, 4vw, 22px);
       font-weight: 600;
       color: var(--text);
       text-align: center;
-      letter-spacing: 0.05em;
-      margin-bottom: 36px;
+      margin-bottom: 4px;
+      line-height: 1.3;
     }
-
-    .countdown-value span {
-      color: var(--gold);
-    }
-
-    /* Level Up button */
-    .btn-levelup {
-      width: 100%;
-      padding: 16px;
-      font-family: 'Cinzel', serif;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #0A0A0F;
-      background: linear-gradient(135deg, #C49A1A, #F5C842, #FFE57A);
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 28px;
-    }
-
-    .btn-levelup:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(245, 200, 66, 0.4);
-    }
-
-    .btn-levelup:active {
-      transform: translateY(0);
-    }
-
-    .btn-levelup.pulse-ready {
-      animation: btnPulse 1.8s ease-in-out infinite;
-    }
-
-    @keyframes btnPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245,200,66,0.4); }
-      50% { box-shadow: 0 0 0 10px rgba(245,200,66,0); }
-    }
-
-    .btn-levelup::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      transition: left 0.5s ease;
-    }
-
-    .btn-levelup:hover::before {
-      left: 100%;
-    }
-
-    /* Start button */
-    .btn-start {
-      width: 100%;
-      padding: 18px;
-      font-family: 'Cinzel', serif;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: #0A0A0F;
-      background: linear-gradient(135deg, #C49A1A, #F5C842);
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .btn-start:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(245,200,66,0.4);
-    }
-
-    /* Start date */
-    .start-info {
+    .phase-sub {
       font-size: 11px;
+      letter-spacing: 0.12em;
       color: var(--text-dim);
       text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .divider {
+      width: 40px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--accent-dim), transparent);
+      margin: 0 auto 22px;
+    }
+
+    /* ── Quota box ── */
+    .quota-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 22px;
+      text-align: center;
+    }
+    .quota-label {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .quota-value {
+      font-family: 'Lora', serif;
+      font-size: clamp(20px, 4vw, 26px);
+      font-weight: 600;
+    }
+    .quota-value.safe    { color: var(--green); }
+    .quota-value.warning { color: var(--accent); }
+    .quota-value.over    { color: var(--red); }
+    .quota-desc {
+      font-size: 11px;
+      color: var(--text-faint);
+      margin-top: 3px;
+    }
+
+    /* ── Week dots ── */
+    .week-section { margin-bottom: 22px; }
+    .week-label {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .week-dots {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+    }
+    .day-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .day-lbl {
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+    }
+    .day-item.is-today .day-lbl { color: var(--accent); }
+
+    .day-dot {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      transition: transform 0.15s ease, opacity 0.15s;
+      position: relative;
+    }
+
+    /* States */
+    .day-dot.empty {
+      background: var(--empty);
+      border: 1px solid var(--empty-border);
+    }
+    .day-dot.is-green {
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      color: var(--green);
+      font-size: 15px;
+    }
+
+    .day-dot.is-red {
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
+      color: var(--red);
+      font-family: 'Lora', serif;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .day-dot.future {
+      background: transparent;
+      border: 1px solid var(--text-faint);
+      opacity: 0.2;
+    }
+    .day-dot.locked { cursor: default; }
+
+    /* Today tappable */
+    .day-dot.tappable { cursor: pointer; }
+    .day-dot.tappable:hover { transform: scale(1.1); }
+    .day-dot.tappable:active { transform: scale(0.95); }
+
+    /* Today indicator ring */
+    .day-item.is-today .day-dot {
+      box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px rgba(200,169,110,0.3);
+    }
+
+    /* Tap hint for today empty */
+    .tap-hint {
+      font-size: 9px;
+      color: var(--text-faint);
+      text-align: center;
+      margin-top: -10px;
+      margin-bottom: 14px;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Over warning ── */
+    .over-warning {
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: var(--red);
+      text-align: center;
+      margin-bottom: 16px;
+      line-height: 1.6;
+      display: none;
+    }
+
+    /* ── Progress ── */
+    .progress-section { margin-bottom: 20px; }
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 7px;
+    }
+    .progress-lbl {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+    .progress-pct {
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .progress-track {
+      width: 100%; height: 6px;
+      background: var(--surface2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 5px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+      border-radius: 3px;
+      transition: width 1s linear;
+    }
+    .progress-fill.complete {
+      animation: softPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes softPulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.7; }
+    }
+    .progress-days {
+      font-size: 11px;
+      color: var(--text-faint);
+      text-align: right;
+    }
+
+    /* ── Buttons ── */
+    .btn-advance {
+      width: 100%;
+      padding: 13px;
+      font-family: 'Lora', serif;
+      font-size: 13px;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--bg);
+      background: linear-gradient(135deg, var(--accent-dim), var(--accent));
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      margin-bottom: 10px;
+      display: none;
       letter-spacing: 0.05em;
     }
-
-    /* Decorative corners */
-    .corner {
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      border-color: rgba(245,200,66,0.3);
-      border-style: solid;
-    }
-    .corner-tl { top: 14px; left: 14px; border-width: 1px 0 0 1px; }
-    .corner-tr { top: 14px; right: 14px; border-width: 1px 1px 0 0; }
-    .corner-bl { bottom: 14px; left: 14px; border-width: 0 0 1px 1px; }
-    .corner-br { bottom: 14px; right: 14px; border-width: 0 1px 1px 0; }
-
-    /* Confetti canvas */
-    #confetti-canvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 999;
+    .btn-advance:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(200,169,110,0.2);
     }
 
-    /* Fade in animation */
-    .fade-in {
-      animation: fadeIn 0.6s ease forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* First time screen */
-    #screen-start .hero-title {
-      font-family: 'Cinzel Decorative', serif;
-      font-size: clamp(22px, 5vw, 30px);
-      font-weight: 900;
-      color: var(--gold);
-      text-align: center;
-      text-shadow: 0 0 40px var(--gold-glow);
-      margin-bottom: 12px;
-    }
-    #screen-start .hero-sub {
-      font-size: 13px;
+    .btn-daily {
+      width: 100%;
+      padding: 13px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       color: var(--text-dim);
-      text-align: center;
-      line-height: 1.7;
-      margin-bottom: 36px;
+      background: transparent;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
+    .btn-daily:hover {
+      border-color: rgba(200,169,110,0.4);
+      color: var(--text);
+      background: rgba(200,169,110,0.04);
+    }
+    .btn-daily .arr {
+      color: var(--accent);
+      transition: transform 0.2s;
+      font-size: 14px;
+    }
+    .btn-daily:hover .arr { transform: translateX(4px); }
 
-    .screen { display: none; }
-    .screen.active { display: block; }
-
-    /* Reset button */
+    /* ── Footer ── */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .start-info {
+      font-size: 10px;
+      color: var(--text-faint);
+    }
     .btn-reset {
       background: none;
       border: none;
       font-size: 10px;
-      letter-spacing: 0.15em;
-      color: rgba(138,128,112,0.4);
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
       cursor: pointer;
-      font-family: 'Cinzel', serif;
       text-transform: uppercase;
-      text-align: center;
-      display: block;
-      width: 100%;
-      margin-top: 8px;
       transition: color 0.2s;
+      font-family: inherit;
     }
-    .btn-reset:hover { color: rgba(138,128,112,0.8); }
+    .btn-reset:hover { color: var(--text-dim); }
+
+    /* ── Screens ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Start screen ── */
+    .hero-title {
+      font-family: 'Lora', serif;
+      font-size: clamp(20px, 5vw, 26px);
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .hero-sub {
+      font-size: 13px;
+      color: var(--text-dim);
+      text-align: center;
+      line-height: 1.9;
+      margin-bottom: 30px;
+    }
+    .btn-start {
+      width: 100%;
+      padding: 14px;
+      font-family: 'Lora', serif;
+      font-size: 14px;
+      font-style: italic;
+      font-weight: 600;
+      color: var(--bg);
+      background: linear-gradient(135deg, var(--accent-dim), var(--accent));
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 0.04em;
+    }
+    .btn-start:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(200,169,110,0.2);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    #confetti-canvas {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 999;
+    }
   </style>
 </head>
 <body>
@@ -378,104 +430,150 @@
 <canvas id="confetti-canvas"></canvas>
 
 <div class="card fade-in">
-  <!-- Decorative corners -->
-  <div class="corner corner-tl"></div>
-  <div class="corner corner-tr"></div>
-  <div class="corner corner-bl"></div>
-  <div class="corner corner-br"></div>
 
-  <!-- SCREEN: First time -->
+  <!-- ── START SCREEN ── -->
   <div id="screen-start" class="screen">
-    <div class="top-bar" style="justify-content:center; margin-bottom:28px;">
-      <div class="app-title">Endurance Timer</div>
+    <div style="text-align:center; margin-bottom:22px;">
+      <span style="font-family:'Lora',serif; font-size:11px; letter-spacing:0.18em; color:var(--text-dim); text-transform:uppercase; font-style:italic;">Frequency Tracker</span>
     </div>
-    <div class="hero-title">Setiap Detik<br/>Adalah Kemenangan</div>
+    <div class="hero-title">Kurangi Satu Langkah<br/>pada Satu Waktu</div>
     <div class="hero-sub">
-      Resistance sejati bukan tentang seberapa keras kamu berjuang —<br/>
-      tapi seberapa lama kamu bertahan.
+      Perubahan sejati bukan tentang berhenti mendadak.<br/>
+      Ini tentang membangun kontrol, pelan tapi pasti.
     </div>
     <div class="divider"></div>
-    <div style="margin-bottom:32px;"></div>
-    <button class="btn-start" onclick="startTimer()">⚔ Mulai Endurance</button>
+    <div style="margin-bottom:24px;"></div>
+    <button class="btn-start" onclick="startTracker()">Mulai Perjalanan →</button>
   </div>
 
-  <!-- SCREEN: Main tracker -->
+  <!-- ── MAIN SCREEN ── -->
   <div id="screen-main" class="screen">
     <div class="top-bar">
-      <div class="app-title">Endurance Timer</div>
-      <div class="level-badge" id="level-badge">Level 1</div>
+      <div class="app-title">Frequency Tracker</div>
+      <div class="fase-badge" id="fase-badge">Fase 1</div>
     </div>
 
-    <div class="level-name" id="level-name">The First Stand</div>
-    <div class="level-subtitle" id="level-subtitle">3-Day Endurance</div>
+    <div class="phase-title" id="phase-title">Mengenal Batas</div>
+    <div class="phase-sub"   id="phase-sub">Maks 4× seminggu · 2 Minggu</div>
     <div class="divider"></div>
 
-    <div class="progress-label-row">
-      <div class="progress-label">Progress</div>
-      <div class="progress-percent" id="progress-percent">0%</div>
+    <!-- Quota -->
+    <div class="quota-box">
+      <div class="quota-label">Periode ini</div>
+      <div class="quota-value safe" id="quota-value">0 / 4</div>
+      <div class="quota-desc"       id="quota-desc">yang dibolehkan minggu ini</div>
     </div>
 
-    <div class="progress-track">
-      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    <!-- Week dots -->
+    <div class="week-section">
+      <div class="week-label">7 Hari Terakhir</div>
+      <div class="week-dots" id="week-dots"></div>
+    </div>
+    <div class="tap-hint" id="tap-hint">tap = ○ bertahan · double tap = +1x · tahan = kurangi</div>
+
+    <!-- Over warning -->
+    <div class="over-warning" id="over-warning">
+      Kuota periode ini terlewati. Ini bukan kegagalan —<br/>periode berikutnya mulai fresh.
     </div>
 
-    <div class="countdown-label" id="countdown-label">Waktu menuju Level berikutnya</div>
-    <div class="countdown-value" id="countdown-value">— Hari, — Jam, — Menit</div>
+    <!-- Progress -->
+    <div class="progress-section">
+      <div class="progress-row">
+        <div class="progress-lbl">Progress Fase</div>
+        <div class="progress-pct" id="progress-pct">0%</div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <div class="progress-days" id="progress-days">Hari ke-0</div>
+    </div>
 
-    <button
-      class="btn-levelup"
-      id="btn-levelup"
-      style="display:none;"
-      onclick="levelUp()"
-    >
-      ✦ Claim Reward &amp; Level Up ✦
+    <!-- Advance -->
+    <button class="btn-advance" id="btn-advance" onclick="advanceFase()">
+      Lanjut ke Fase Berikutnya →
     </button>
 
-    <div class="start-info" id="start-info"></div>
-    <button class="btn-reset" onclick="confirmReset()">· reset ·</button>
+    <!-- Daily wins -->
+    <button class="btn-daily" onclick="window.open('https://sebar-terbang.github.io/hgt/','_blank')">
+      Bangun Versi Terbaik Lo <span class="arr">→</span>
+    </button>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="start-info" id="start-info"></div>
+      <button class="btn-reset" onclick="confirmReset()">reset</button>
+    </div>
   </div>
 
 </div>
 
 <script>
-  // ─── Config ───────────────────────────────────────────────
-  const LEVEL_DAYS = [3, 7, 14, 30, 60, 90, 180, 365];
-  const LEVEL_NAMES = [
-    "The First Stand",
-    "One Week Strong",
-    "The Fortnight Test",
-    "One Month Unbroken",
-    "Two Months of Steel",
-    "The Ninety Days",
-    "Half a Year",
-    "One Year. Reborn.",
+  const PHASES = [
+    { name:"Mengenal Batas",    max:4, days:14, desc:"Maks 4× seminggu · 2 Minggu",  monthly:false },
+    { name:"Membangun Kontrol", max:3, days:14, desc:"Maks 3× seminggu · 2 Minggu",  monthly:false },
+    { name:"Setengah Jalan",    max:2, days:14, desc:"Maks 2× seminggu · 2 Minggu",  monthly:false },
+    { name:"Satu Langkah Lagi", max:1, days:21, desc:"Maks 1× seminggu · 3 Minggu",  monthly:false },
+    { name:"Hampir di Sana",    max:3, days:28, desc:"Maks 3× sebulan · 4 Minggu",   monthly:true  },
+    { name:"Jarang Sekali",     max:2, days:28, desc:"Maks 2× sebulan · 4 Minggu",   monthly:true  },
+    { name:"Sangat Jarang",     max:1, days:42, desc:"Maks 1× sebulan · 6 Minggu",   monthly:true  },
+    { name:"Bebas",             max:0, days:0,  desc:"Lo sudah sampai. Selamat.",     monthly:false },
   ];
 
-  function getLevelDays(level) {
-    const idx = level - 1;
-    if (idx < LEVEL_DAYS.length) return LEVEL_DAYS[idx];
-    return 365 * (idx - LEVEL_DAYS.length + 2);
+  const DAY_LABELS = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
+  let currentFase = parseInt(localStorage.getItem('ft_fase')  || '0');
+  let faseStart   = parseInt(localStorage.getItem('ft_start') || '0');
+  // loggedDays: { "YYYY-MM-DD": { green: bool, red: number } }
+  let loggedDays  = JSON.parse(localStorage.getItem('ft_log') || '{}');
+
+  function dateKey(d) { return d.toISOString().split('T')[0]; }
+  function todayKey() { return dateKey(new Date()); }
+
+  function getWeekDays() {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      days.push(d);
+    }
+    return days;
   }
 
-  function getLevelName(level) {
-    const idx = level - 1;
-    if (idx < LEVEL_NAMES.length) return LEVEL_NAMES[idx];
-    return `Year ${idx - LEVEL_DAYS.length + 2}`;
+  function countThisWeek() {
+    const today = new Date();
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    monday.setHours(0,0,0,0);
+    return Object.keys(loggedDays).reduce((sum, k) => {
+      const d = new Date(k);
+      if (d >= monday && d <= today) sum += (loggedDays[k].red || 0);
+      return sum;
+    }, 0);
   }
 
-  // ─── State ────────────────────────────────────────────────
-  let currentLevel = parseInt(localStorage.getItem('et_level') || '1');
-  let startTimestamp = parseInt(localStorage.getItem('et_start') || '0');
-  let ticker = null;
+  function countThisMonth() {
+    const today = new Date();
+    const first = new Date(today.getFullYear(), today.getMonth(), 1);
+    return Object.keys(loggedDays).reduce((sum, k) => {
+      const d = new Date(k);
+      if (d >= first && d <= today) sum += (loggedDays[k].red || 0);
+      return sum;
+    }, 0);
+  }
 
-  // ─── Init ─────────────────────────────────────────────────
+  function save() {
+    localStorage.setItem('ft_fase',  currentFase);
+    localStorage.setItem('ft_start', faseStart);
+    localStorage.setItem('ft_log',   JSON.stringify(loggedDays));
+  }
+
   function init() {
-    if (!startTimestamp) {
+    if (!faseStart) {
       showScreen('screen-start');
     } else {
       showScreen('screen-main');
       renderMain();
-      startTicker();
+      setInterval(renderMain, 60000);
     }
   }
 
@@ -484,158 +582,238 @@
     document.getElementById(id).classList.add('active');
   }
 
-  function startTimer() {
-    startTimestamp = Date.now();
-    currentLevel = 1;
+  function startTracker() {
+    faseStart   = Date.now();
+    currentFase = 0;
+    loggedDays  = {};
     save();
     showScreen('screen-main');
     renderMain();
-    startTicker();
+    setInterval(renderMain, 60000);
   }
 
-  function save() {
-    localStorage.setItem('et_level', currentLevel);
-    localStorage.setItem('et_start', startTimestamp);
-  }
-
-  // ─── Render ───────────────────────────────────────────────
   function renderMain() {
-    const days = getLevelDays(currentLevel);
-    const name = getLevelName(currentLevel);
+    const phase   = PHASES[currentFase];
+    const isFinal = currentFase === PHASES.length - 1;
 
-    document.getElementById('level-badge').textContent = `Level ${currentLevel}`;
-    document.getElementById('level-name').textContent = name;
-    document.getElementById('level-subtitle').textContent = `${days}-Day Endurance`;
+    document.getElementById('fase-badge').textContent  = `Fase ${currentFase + 1}`;
+    document.getElementById('phase-title').textContent = phase.name;
+    document.getElementById('phase-sub').textContent   = phase.desc;
 
-    // Start date
-    const d = new Date(startTimestamp);
-    const opts = { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-    document.getElementById('start-info').textContent =
-      `Dimulai: ${d.toLocaleDateString('id-ID', opts)}`;
+    // Quota — only count 'red' as "melakukan"
+    const used    = phase.monthly ? countThisMonth() : countThisWeek();
+    const max     = phase.max;
+    const quotaEl = document.getElementById('quota-value');
+    const descEl  = document.getElementById('quota-desc');
+    const warnEl  = document.getElementById('over-warning');
 
-    tick();
-  }
+    if (isFinal) {
+      quotaEl.textContent  = '✓ Bebas';
+      quotaEl.className    = 'quota-value safe';
+      descEl.textContent   = 'Lo sudah sampai di sini.';
+      warnEl.style.display = 'none';
+    } else {
+      quotaEl.textContent = `${used} / ${max}`;
+      if (used > max) {
+        quotaEl.className    = 'quota-value over';
+        warnEl.style.display = 'block';
+      } else if (max > 0 && used / max >= 0.75) {
+        quotaEl.className    = 'quota-value warning';
+        warnEl.style.display = 'none';
+      } else {
+        quotaEl.className    = 'quota-value safe';
+        warnEl.style.display = 'none';
+      }
+      descEl.textContent = phase.monthly ? 'yang dibolehkan bulan ini' : 'yang dibolehkan minggu ini';
+    }
 
-  function startTicker() {
-    if (ticker) clearInterval(ticker);
-    ticker = setInterval(tick, 1000);
-  }
-
-  function tick() {
-    const days = getLevelDays(currentLevel);
-    const targetMs = days * 24 * 60 * 60 * 1000;
-    const elapsed = Date.now() - startTimestamp;
-    const raw = elapsed / targetMs;
-    const pct = Math.min(raw * 100, 100);
+    renderWeekDots();
 
     // Progress bar
-    document.getElementById('progress-fill').style.width = pct.toFixed(2) + '%';
-    document.getElementById('progress-percent').textContent = Math.floor(pct) + '%';
+    if (!isFinal) {
+      const elapsed  = Date.now() - faseStart;
+      const targetMs = phase.days * 86400000;
+      const pct      = Math.min((elapsed / targetMs) * 100, 100);
+      const dayNum   = Math.floor(elapsed / 86400000);
 
-    const fill = document.getElementById('progress-fill');
-    if (pct >= 100) {
-      fill.classList.add('complete');
+      document.getElementById('progress-pct').textContent  = Math.floor(pct) + '%';
+      document.getElementById('progress-fill').style.width = pct.toFixed(1) + '%';
+      document.getElementById('progress-days').textContent = `Hari ke-${dayNum} dari ${phase.days}`;
+
+      const fill = document.getElementById('progress-fill');
+      pct >= 100 ? fill.classList.add('complete') : fill.classList.remove('complete');
+      document.getElementById('btn-advance').style.display = pct >= 100 ? 'block' : 'none';
     } else {
-      fill.classList.remove('complete');
+      document.getElementById('progress-pct').textContent  = '100%';
+      document.getElementById('progress-fill').style.width = '100%';
+      document.getElementById('progress-fill').classList.add('complete');
+      document.getElementById('progress-days').textContent = 'Fase terakhir tercapai';
+      document.getElementById('btn-advance').style.display = 'none';
     }
 
-    // Countdown
-    const remaining = Math.max(0, targetMs - elapsed);
-    if (remaining <= 0) {
-      document.getElementById('countdown-label').textContent = 'Level Up siap diklaim!';
-      document.getElementById('countdown-value').innerHTML =
-        '<span>0</span> Hari, <span>0</span> Jam, <span>0</span> Menit';
-    } else {
-      const rDays = Math.floor(remaining / (1000 * 60 * 60 * 24));
-      const rHours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const rMins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-      document.getElementById('countdown-label').textContent = 'Waktu menuju Level berikutnya';
-      document.getElementById('countdown-value').innerHTML =
-        `<span>${rDays}</span> Hari, <span>${rHours}</span> Jam, <span>${rMins}</span> Menit`;
-    }
-
-    // Level Up button
-    const btn = document.getElementById('btn-levelup');
-    if (pct >= 100) {
-      btn.style.display = 'block';
-      btn.classList.add('pulse-ready');
-    } else {
-      btn.style.display = 'none';
-      btn.classList.remove('pulse-ready');
-    }
+    const d = new Date(faseStart);
+    document.getElementById('start-info').textContent =
+      `Fase dimulai: ${d.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' })}`;
   }
 
-  // ─── Level Up ─────────────────────────────────────────────
-  function levelUp() {
+  function renderWeekDots() {
+    const container = document.getElementById('week-dots');
+    container.innerHTML = '';
+    const days  = getWeekDays();
+    const today = todayKey();
+
+    days.forEach(date => {
+      const key      = dateKey(date);
+      const isToday  = key === today;
+      const isFuture = key > today;
+      const isPast   = key < today;
+      const entry    = loggedDays[key] || {};
+      const redCount = entry.red || 0;
+      const isGreen  = !!entry.green;
+
+      const item = document.createElement('div');
+      item.className = 'day-item' + (isToday ? ' is-today' : '');
+
+      const lbl = document.createElement('div');
+      lbl.className   = 'day-lbl';
+      lbl.textContent = DAY_LABELS[date.getDay()];
+
+      const dot = document.createElement('div');
+      dot.className = 'day-dot';
+
+      if (isFuture) {
+        dot.classList.add('future', 'locked');
+      } else if (isPast) {
+        dot.classList.add('locked');
+        if (redCount > 0) { dot.classList.add('is-red'); dot.textContent = redCount; }
+        else if (isGreen) { dot.classList.add('is-green'); dot.textContent = '○'; }
+        else dot.classList.add('empty');
+      } else {
+        // Today: single tap = +1 red, double tap = toggle green, long press = -1 red
+        dot.classList.add('tappable');
+        if (redCount > 0) { dot.classList.add('is-red'); dot.textContent = redCount; }
+        else if (isGreen) { dot.classList.add('is-green'); dot.textContent = '○'; }
+        else dot.classList.add('empty');
+
+        let tapCount = 0, tapTimer = null, pressTimer = null;
+
+        dot.addEventListener('click', () => {
+          tapCount++;
+          clearTimeout(tapTimer);
+          tapTimer = setTimeout(() => {
+            if (tapCount >= 2) addRed(key);   // double tap = +1 merah (susah)
+            else toggleGreen(key);             // single tap = toggle hijau (mudah)
+            tapCount = 0;
+          }, 260);
+        });
+
+        dot.addEventListener('pointerdown', () => {
+          pressTimer = setTimeout(() => {
+            tapCount = 0;
+            clearTimeout(tapTimer);
+            removeRed(key);                    // tahan = kurangi merah
+          }, 500);
+        });
+        dot.addEventListener('pointerup',    () => clearTimeout(pressTimer));
+        dot.addEventListener('pointerleave', () => clearTimeout(pressTimer));
+      }
+
+      item.appendChild(lbl);
+      item.appendChild(dot);
+      container.appendChild(item);
+    });
+
+    const entry = loggedDays[today] || {};
+    const hasTodayData = (entry.red > 0) || entry.green;
+    document.getElementById('tap-hint').style.opacity = hasTodayData ? '0' : '1';
+  }
+
+  function addRed(key) {
+    if (!loggedDays[key]) loggedDays[key] = {};
+    loggedDays[key].red   = (loggedDays[key].red || 0) + 1;
+    loggedDays[key].green = false;
+    save(); renderMain();
+  }
+
+  function removeRed(key) {
+    if (!loggedDays[key]) return;
+    const cur = loggedDays[key].red || 0;
+    if (cur > 0) loggedDays[key].red = cur - 1;
+    if (!loggedDays[key].red && !loggedDays[key].green) delete loggedDays[key];
+    save(); renderMain();
+  }
+
+  function toggleGreen(key) {
+    if (!loggedDays[key]) loggedDays[key] = {};
+    const hasRed = (loggedDays[key].red || 0) > 0;
+    if (hasRed) {
+      // already has red — green not allowed while red exists
+      // but single tap when red exists: do nothing (force double tap awareness)
+      return;
+    }
+    loggedDays[key].green = !loggedDays[key].green;
+    if (!loggedDays[key].green) delete loggedDays[key];
+    save(); renderMain();
+  }
+
+  function advanceFase() {
+    if (currentFase >= PHASES.length - 1) return;
     launchConfetti();
     setTimeout(() => {
-      currentLevel++;
-      startTimestamp = Date.now();
+      currentFase++;
+      faseStart = Date.now();
       save();
       renderMain();
     }, 400);
   }
 
-  // ─── Reset ────────────────────────────────────────────────
   function confirmReset() {
-    if (confirm('Reset semua progress? Timer akan mulai dari Level 1.')) {
-      clearInterval(ticker);
-      localStorage.removeItem('et_level');
-      localStorage.removeItem('et_start');
-      currentLevel = 1;
-      startTimestamp = 0;
+    if (confirm('Reset semua progress? Semua data akan terhapus.')) {
+      localStorage.removeItem('ft_fase');
+      localStorage.removeItem('ft_start');
+      localStorage.removeItem('ft_log');
+      currentFase = 0; faseStart = 0; loggedDays = {};
       showScreen('screen-start');
     }
   }
 
-  // ─── Confetti ─────────────────────────────────────────────
   function launchConfetti() {
     const canvas = document.getElementById('confetti-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
+    const ctx    = canvas.getContext('2d');
+    canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
-
-    const colors = ['#F5C842', '#FFE57A', '#C49A1A', '#FFFFFF', '#FFF0A0', '#E8D080'];
-    const particles = Array.from({ length: 120 }, () => ({
+    const colors = ['#C8A96E','#D4C9B0','#8A7040','#FFFFFF','#E8D8B0','#7AAF8A'];
+    const particles = Array.from({ length: 90 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height - canvas.height,
-      w: Math.random() * 10 + 4,
-      h: Math.random() * 6 + 3,
+      w: Math.random() * 9 + 3,
+      h: Math.random() * 5 + 3,
       color: colors[Math.floor(Math.random() * colors.length)],
-      vx: (Math.random() - 0.5) * 3,
-      vy: Math.random() * 4 + 2,
+      vx: (Math.random() - 0.5) * 2.5,
+      vy: Math.random() * 3.5 + 1.5,
       angle: Math.random() * Math.PI * 2,
-      spin: (Math.random() - 0.5) * 0.2,
+      spin: (Math.random() - 0.5) * 0.15,
       opacity: 1,
     }));
-
     let frame = 0;
-    function draw() {
+    (function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.angle += p.spin;
-        p.opacity -= 0.008;
-
+        p.x += p.vx; p.y += p.vy;
+        p.angle += p.spin; p.opacity -= 0.008;
         ctx.save();
         ctx.globalAlpha = Math.max(0, p.opacity);
         ctx.translate(p.x, p.y);
         ctx.rotate(p.angle);
         ctx.fillStyle = p.color;
-        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
         ctx.restore();
       });
-
-      frame++;
-      if (frame < 160) requestAnimationFrame(draw);
+      if (++frame < 160) requestAnimationFrame(draw);
       else ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    draw();
+    })();
   }
 
-  // ─── Boot ─────────────────────────────────────────────────
   init();
 </script>
 </body>
