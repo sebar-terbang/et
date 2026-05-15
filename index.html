@@ -330,28 +330,29 @@
   }
 
   .stats-row {
-    display: flex;
-    gap: 12px;
-    margin-top: 2rem;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 1.5rem;
   }
 
   .stat-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 1rem 1.5rem;
-    flex: 1;
-    min-width: 120px;
+    padding: 0.9rem 1rem;
   }
 
   .stat-label {
     font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.3rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .stat-value {
@@ -400,10 +401,10 @@
     .week-date-num { font-size: 1.6rem; }
     .week-day-name { font-size: 0.6rem; }
     .week-check { width: 20px; height: 20px; font-size: 0.7rem; }
-    .stats-row { gap: 8px; margin-top: 1.2rem; }
-    .stat-card { padding: 0.75rem 1rem; min-width: 0; }
-    .stat-value { font-size: 1.6rem; }
-    .stat-label { font-size: 0.62rem; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 1rem; }
+    .stat-card { padding: 0.65rem 0.75rem; border-radius: 10px; min-width: 0; }
+    .stat-value { font-size: 1.8rem; }
+    .stat-label { font-size: 0.6rem; letter-spacing: 0.04em; }
     .hint { font-size: 0.68rem; margin-top: 1rem; }
   }
   @media (max-width: 380px) {
@@ -431,6 +432,25 @@
 </header>
 
 <div class="main">
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Streak Kini</div>
+      <div class="stat-value" id="statCurrent">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Terpanjang</div>
+      <div class="stat-value" id="statBest">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Hari</div>
+      <div class="stat-value" id="statTotal">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Bulan Ini</div>
+      <div class="stat-value" id="statMonth">0</div>
+    </div>
+  </div>
+
   <div class="nav-bar">
     <div class="nav-arrows">
       <button class="nav-btn" onclick="navigate(-1)">&#8592;</button>
@@ -450,25 +470,6 @@
   <!-- WEEKLY VIEW -->
   <div class="week-view" id="weekView">
     <div class="week-row" id="weekRow"></div>
-  </div>
-
-  <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-label">Streak Saat Ini</div>
-      <div class="stat-value" id="statCurrent">0</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Streak Terpanjang</div>
-      <div class="stat-value" id="statBest">0</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Total Hari Selesai</div>
-      <div class="stat-value" id="statTotal">0</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Bulan Ini</div>
-      <div class="stat-value" id="statMonth">0</div>
-    </div>
   </div>
 
   <div class="hint">↑ Klik tanggal untuk menandai selesai &mdash; angka akan tercoret</div>
