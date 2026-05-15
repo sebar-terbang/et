@@ -2,650 +2,667 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>chain.</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Syne+Mono&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Don't Break the Chain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #f5f4f0;
-  --surface: #ffffff;
-  --surface2: #eeece6;
-  --border: #e4e1d8;
-  --text: #1c1b18;
-  --muted: #95928a;
-  --accent: #2c5f3f;
-  --accent-light: #e8f2eb;
-  --accent2: #3d7a55;
-  --gold: #a87020;
-  --gold-light: #fdf4e3;
-  --radius: 16px;
-  --radius-sm: 10px;
-  --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 3px 12px rgba(0,0,0,0.05);
-}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
+  :root {
+    --bg: #0e0e0e;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --border: #2e2e2e;
+    --accent: #52b788;
+    --accent-dim: rgba(82, 183, 136, 0.12);
+    --text: #e8f0eb;
+    --muted: #6a7a6e;
+    --done-bg: #0d1f14;
+    --done-text: #52b788;
+    --chain-color: #52b788;
+  }
 
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Manrope',sans-serif;
-  min-height:100vh;
-  padding-bottom:48px;
-}
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
 
-.app{max-width:430px;margin:0 auto;padding:0 16px}
+  header {
+    padding: 2rem 2.5rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
 
-/* TOP BAR */
-.topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:22px 0 14px;
-}
-.brand{
-  font-family:'Syne',sans-serif;font-weight:800;font-size:20px;
-  letter-spacing:-0.5px;color:var(--text);
-}
-.brand em{color:var(--accent);font-style:normal}
-.icon-btn{
-  width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);
-  background:var(--surface);display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:15px;box-shadow:var(--shadow);transition:border-color .2s;
-}
-.icon-btn:hover{border-color:var(--accent)}
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--text);
+  }
 
-/* ── CHAIN CALENDAR CARD ── */
-.card{
-  background:var(--surface);border-radius:var(--radius);
-  box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;
-}
-.card-pad{padding:18px}
+  .logo span { color: #74c69d; }
 
-.chain-top{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 18px 14px;
-}
-.chain-left{display:flex;align-items:center;gap:10px}
-.chain-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px}
-.streak-pill{
-  background:var(--accent);color:#fff;
-  font-family:'Syne Mono',monospace;font-size:11px;
-  padding:3px 9px;border-radius:20px;
-}
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
 
-.view-toggle{
-  display:flex;background:var(--surface2);border-radius:8px;padding:3px;gap:2px;
-}
-.tog{
-  font-family:'Manrope',sans-serif;font-size:11px;font-weight:600;
-  padding:4px 11px;border:none;background:transparent;color:var(--muted);
-  border-radius:6px;cursor:pointer;transition:all .2s;
-}
-.tog.on{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .streak-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    border-radius: 100px;
+    padding: 0.4rem 1rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
 
-/* month nav */
-.month-nav{
-  display:none;align-items:center;justify-content:space-between;
-  padding:10px 18px;border-top:1px solid var(--border);
-}
-.month-nav.show{display:flex}
-.month-lbl{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;letter-spacing:.3px}
-.mnav{display:flex;gap:6px}
-.mnav-btn{
-  width:30px;height:30px;border-radius:8px;border:1.5px solid var(--border);
-  background:transparent;color:var(--text);font-size:14px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;transition:all .15s;
-}
-.mnav-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .streak-badge .fire { font-size: 1.3rem; }
 
-/* calendar grid */
-.cal-wrap{padding:14px 14px 0}
-.cal-labels{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px}
-.cl{
-  text-align:center;font-family:'Syne Mono',monospace;font-size:9px;
-  letter-spacing:.5px;color:var(--muted);text-transform:uppercase;padding:3px 0 8px;
-}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .view-toggle {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
 
-.cc{
-  aspect-ratio:1;border-radius:9px;display:flex;align-items:center;justify-content:center;
-  font-family:'Syne Mono',monospace;font-size:12px;color:var(--muted);
-  position:relative;transition:all .15s;user-select:none;
-}
-.cc.in{color:var(--text)}
-.cc.dim{color:#ccc9be}
+  .view-btn {
+    padding: 0.4rem 1.1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
 
-/* chain day — green X mark */
-.cc.chain{
-  background:var(--accent-light);
-}
-.cc.chain::after{
-  content:'✕';
-  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:800;color:var(--accent);
-}
+  .view-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
 
-/* milestone day overrides color */
-.cc.chain.ms-day::after{color:var(--gold)}
-.cc.chain.ms-day{background:var(--gold-light)}
+  .main { padding: 2rem 2.5rem; max-width: 1000px; }
 
-/* today ring */
-.cc.today{border:2px solid var(--accent)}
-.cc.today::before{
-  content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
-  width:3px;height:3px;border-radius:50%;background:var(--accent);
-}
-.cc.chain.today::after{background:transparent}
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
 
-.cc.fut{opacity:.3}
+  .nav-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.06em;
+    color: var(--text);
+  }
 
-/* CHECK IN */
-.checkin-bar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px;border-top:1px solid var(--border);
-  margin-top:4px;
-}
-.ci-status{display:flex;align-items:center;gap:8px}
-.ci-dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0}
-.ci-dot.on{background:var(--accent)}
-.ci-txt{font-size:12px;font-weight:500;color:var(--muted)}
-.ci-txt.on{color:var(--accent)}
-.ci-btn{
-  font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
-  padding:9px 18px;border-radius:9px;border:none;cursor:pointer;transition:all .2s;
-}
-.ci-btn.go{background:var(--accent);color:#fff}
-.ci-btn.go:active{transform:scale(.97)}
-.ci-btn.done{background:var(--accent-light);color:var(--accent);cursor:default}
+  .nav-arrows { display: flex; gap: 8px; }
 
-/* ── COUNTER ── */
-.counter-inner{
-  display:flex;align-items:flex-end;justify-content:space-between;
-  padding:20px 18px 16px;
-}
-.big-num{
-  font-family:'Syne',sans-serif;font-weight:800;font-size:62px;
-  line-height:1;letter-spacing:-2px;color:var(--text);
-}
-.big-unit{font-size:13px;color:var(--muted);font-weight:500;margin-top:4px}
-.meta-stats{display:flex;flex-direction:column;gap:12px;align-items:flex-end;padding-bottom:4px}
-.ms-val{font-family:'Syne Mono',monospace;font-size:17px;color:var(--text);text-align:right}
-.ms-lbl{font-size:10px;color:var(--muted);text-align:right;margin-top:1px}
+  .nav-btn {
+    width: 36px; height: 36px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s, background 0.15s;
+  }
 
-.start-bar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:12px 18px;border-top:1px solid var(--border);
-}
-.start-lbl{font-size:12px;color:var(--muted)}
-.start-lbl strong{color:var(--text);font-weight:600}
-.btns{display:flex;gap:7px}
-.act-btn{
-  font-family:'Manrope',sans-serif;font-size:11px;font-weight:700;
-  padding:7px 13px;border-radius:8px;border:1.5px solid var(--border);
-  background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;
-}
-.act-btn.set{border-color:var(--accent);color:var(--accent)}
-.act-btn.set:hover{background:var(--accent);color:#fff}
-.act-btn:hover{border-color:var(--text);color:var(--text)}
+  .nav-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
 
-/* ── NEXT MILESTONE ── */
-.next-ms-card{
-  background:var(--surface);border-radius:var(--radius);
-  box-shadow:var(--shadow);padding:16px 18px;margin-bottom:12px;
-  border-left:3px solid var(--gold);
-  animation:fadeUp .4s ease .1s both;
-}
-.nms-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
-.nms-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
-.nms-name{font-family:'Syne',sans-serif;font-weight:700;font-size:16px}
-.nms-days{font-family:'Syne Mono',monospace;font-size:12px;color:var(--muted)}
-.prog-track{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),#d4960a);border-radius:2px;transition:width .6s ease}
+  .day-headers {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 4px;
+  }
 
-/* ── MILESTONES LIST ── */
-.sec-label{
-  font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--muted);margin-bottom:8px;animation:fadeUp .4s ease .15s both;
-}
-.ms-list{display:flex;flex-direction:column;gap:7px;animation:fadeUp .4s ease .2s both}
+  .day-header {
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    padding: 0.4rem 0;
+    text-transform: uppercase;
+  }
 
-.ms-item{
-  background:var(--surface);border-radius:var(--radius-sm);
-  box-shadow:var(--shadow);padding:12px 15px;
-  display:flex;align-items:center;gap:13px;
-}
-.ms-item.done{border-left:3px solid var(--accent)}
-.ms-item.next{border-left:3px solid var(--gold);background:linear-gradient(90deg,var(--gold-light) 0%,var(--surface) 60%)}
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
 
-.ms-ico{font-size:22px;width:30px;text-align:center;flex-shrink:0}
-.ms-txt{flex:1;min-width:0}
-.ms-t{font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
-.ms-d{font-size:11px;color:var(--muted);margin-top:1px}
-.ms-n{font-family:'Syne Mono',monospace;font-size:13px;color:var(--muted);white-space:nowrap}
-.ms-item.done .ms-n{color:var(--accent)}
-.ms-item.next .ms-n{color:var(--gold)}
-.ms-ck{
-  width:22px;height:22px;border-radius:50%;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:10px;
-}
-.ms-ck.y{background:var(--accent);color:#fff}
-.ms-ck.n{border:1.5px solid var(--border)}
+  .day-cell {
+    aspect-ratio: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    user-select: none;
+    overflow: hidden;
+  }
 
-/* ── BOTTOM SHEET / MODAL ── */
-.overlay{
-  position:fixed;inset:0;background:rgba(15,14,12,.5);
-  backdrop-filter:blur(5px);z-index:100;
-  display:flex;align-items:flex-end;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .25s;
-}
-.overlay.open{opacity:1;pointer-events:all}
-.sheet{
-  background:var(--surface);border-radius:22px 22px 0 0;
-  padding:26px 22px 44px;width:100%;max-width:430px;
-  transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
-}
-.overlay.open .sheet{transform:translateY(0)}
-.handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 22px}
-.sheet-title{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px}
-.sheet-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.5}
-.date-input{
-  width:100%;background:var(--surface2);border:1.5px solid var(--border);
-  border-radius:10px;font-family:'Syne Mono',monospace;font-size:15px;
-  color:var(--text);padding:13px 15px;margin-bottom:14px;
-  outline:none;transition:border-color .2s;-webkit-appearance:none;
-}
-.date-input:focus{border-color:var(--accent)}
-.sheet-btns{display:flex;gap:10px}
-.s-btn{
-  flex:1;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;
-  padding:13px;border-radius:10px;border:none;cursor:pointer;transition:all .2s;
-}
-.s-btn.pri{background:var(--accent);color:#fff}
-.s-btn.pri:hover{background:var(--accent2)}
-.s-btn.sec{background:var(--surface2);color:var(--muted)}
+  .day-cell:hover:not(.empty):not(.future) {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    transform: scale(1.04);
+  }
 
-/* ── TOAST ── */
-.toast{
-  position:fixed;bottom:24px;left:50%;
-  transform:translateX(-50%) translateY(120px);
-  background:var(--text);color:#fff;border-radius:12px;
-  padding:11px 20px;font-size:13px;font-weight:600;z-index:200;
-  display:flex;align-items:center;gap:9px;
-  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
-  box-shadow:0 4px 20px rgba(0,0,0,.2);white-space:nowrap;
-}
-.toast.show{transform:translateX(-50%) translateY(0)}
-.t-ico{font-size:17px}
+  .day-cell.empty { background: transparent; border-color: transparent; cursor: default; }
+  .day-cell.future { opacity: 0.25; cursor: not-allowed; }
+  .day-cell.today { border-color: #888; }
 
-/* ── QUOTE ── */
-.quote-wrap{
-  background:var(--surface);border-radius:var(--radius-sm);
-  padding:14px 16px;margin-top:4px;
-  animation:fadeUp .4s ease .25s both;
-}
-.quote-txt{font-size:12px;color:var(--muted);font-style:italic;line-height:1.65}
+  .day-cell.done {
+    background: var(--done-bg);
+    border-color: var(--accent);
+  }
 
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
-}
-.card{animation:fadeUp .4s ease both}
-.counter-card{animation:fadeUp .4s ease .05s both}
+  .day-num {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.75rem, 2vw, 1rem);
+    font-weight: 500;
+    color: var(--text);
+    position: relative;
+    z-index: 1;
+  }
+
+  .day-cell.done .day-num {
+    color: var(--done-text);
+  }
+
+  .strikethrough {
+    position: absolute;
+    width: 70%;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease;
+    z-index: 2;
+  }
+
+  .day-cell.done .strikethrough { transform: translate(-50%, -50%) scaleX(1); }
+
+  .chain-connector {
+    position: absolute;
+    background: var(--chain-color);
+    opacity: 0.35;
+    z-index: 0;
+  }
+
+  .chain-connector.right { top: 50%; right: -4px; width: 8px; height: 3px; transform: translateY(-50%); }
+  .chain-connector.left  { top: 50%; left: -4px; width: 8px; height: 3px; transform: translateY(-50%); }
+
+  .today-dot {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+  }
+
+  /* WEEKLY VIEW */
+  .week-view { display: none; }
+  .week-view.visible { display: block; }
+  .month-view { display: block; }
+  .month-view.hidden { display: none; }
+
+  .week-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+
+  .week-cell {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.2rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+    min-height: 100px;
+  }
+
+  .week-cell:hover:not(.future) {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    transform: translateY(-2px);
+  }
+
+  .week-cell.future { opacity: 0.25; cursor: not-allowed; }
+  .week-cell.today { border-color: #888; }
+
+  .week-cell.done {
+    background: var(--done-bg);
+    border-color: var(--accent);
+  }
+
+  .week-day-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .week-cell.done .week-day-name { color: var(--accent); opacity: 0.7; }
+
+  .week-date-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--text);
+    position: relative;
+  }
+
+  .week-cell.done .week-date-num { color: var(--accent); }
+
+  .week-strike {
+    position: absolute;
+    width: 60%;
+    height: 2.5px;
+    background: var(--accent);
+    border-radius: 2px;
+    top: 54%;
+    left: 50%;
+    transform: translate(-50%, -50%) scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease;
+  }
+
+  .week-cell.done .week-strike { transform: translate(-50%, -50%) scaleX(1); }
+
+  .week-check {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    color: transparent;
+    transition: all 0.15s;
+  }
+
+  .week-cell.done .week-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 600px) {
+    header {
+      padding: 1rem 1rem 0.8rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .header-right {
+      width: 100%;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { font-size: 1.8rem; }
+    .streak-badge { font-size: 0.85rem; padding: 0.3rem 0.75rem; }
+    .streak-badge .fire { font-size: 1rem; }
+    .main { padding: 0.9rem 1rem; }
+    .nav-label { font-size: 1.1rem; }
+    .nav-btn { width: 30px; height: 30px; font-size: 0.85rem; }
+    .day-header { font-size: 0.6rem; padding: 0.25rem 0; }
+    .calendar-grid { gap: 3px; }
+    .day-headers { gap: 3px; }
+    .day-cell { border-radius: 7px; }
+    .day-num { font-size: 0.7rem; }
+    .today-dot { width: 3px; height: 3px; bottom: 3px; }
+    .week-row { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .week-cell { padding: 0.7rem 0.4rem; min-height: 70px; border-radius: 10px; }
+    .week-date-num { font-size: 1.6rem; }
+    .week-day-name { font-size: 0.6rem; }
+    .week-check { width: 20px; height: 20px; font-size: 0.7rem; }
+    .stats-row { gap: 8px; margin-top: 1.2rem; }
+    .stat-card { padding: 0.75rem 1rem; min-width: 0; }
+    .stat-value { font-size: 1.6rem; }
+    .stat-label { font-size: 0.62rem; }
+    .hint { font-size: 0.68rem; margin-top: 1rem; }
+  }
+  @media (max-width: 380px) {
+    .calendar-grid { gap: 2px; }
+    .day-headers { gap: 2px; }
+    .day-num { font-size: 0.62rem; }
+    .week-row { grid-template-columns: repeat(4, 1fr); }
+  }
 </style>
 </head>
 <body>
-<div class="app">
 
-  <div class="topbar">
-    <div class="brand">chain<em>.</em></div>
+<header>
+  <div class="logo">Don't Break<br><span>The Chain</span></div>
+  <div class="header-right">
+    <div class="streak-badge">
+      <span class="fire">🔥</span>
+      <span id="streakCount">0</span> HARI BERTURUT
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" id="btnMonthly" onclick="setView('monthly')">Bulanan</button>
+      <button class="view-btn" id="btnWeekly" onclick="setView('weekly')">Mingguan</button>
+    </div>
   </div>
+</header>
 
-  <!-- CHAIN CALENDAR -->
-  <div class="card">
-    <div class="chain-top">
-      <div class="chain-left">
-        <div class="chain-title">Don't Break the Chain</div>
-        <div class="streak-pill" id="streakPill">0h</div>
-      </div>
-      <div class="view-toggle">
-        <button class="tog on" id="togWeek" onclick="setView('week')">Minggu</button>
-        <button class="tog" id="togMonth" onclick="setView('month')">Bulan</button>
-      </div>
+<div class="main">
+  <div class="nav-bar">
+    <div class="nav-arrows">
+      <button class="nav-btn" onclick="navigate(-1)">&#8592;</button>
     </div>
-
-    <div class="month-nav" id="monthNav">
-      <div class="month-lbl" id="monthLbl"></div>
-      <div class="mnav">
-        <button class="mnav-btn" onclick="changeMonth(-1)">‹</button>
-        <button class="mnav-btn" onclick="changeMonth(1)">›</button>
-      </div>
-    </div>
-
-    <div class="cal-wrap">
-      <div class="cal-labels" id="calLabels"></div>
-      <div class="cal-grid" id="calGrid"></div>
-    </div>
-
-    <div class="checkin-bar">
-      <div class="ci-status">
-        <div class="ci-dot" id="ciDot"></div>
-        <div class="ci-txt" id="ciTxt">Belum check in hari ini</div>
-      </div>
-      <button class="ci-btn go" id="ciBtn" onclick="doCheckIn()">✓ Check In</button>
+    <div class="nav-label" id="navLabel"></div>
+    <div class="nav-arrows">
+      <button class="nav-btn" onclick="navigate(1)">&#8594;</button>
     </div>
   </div>
 
-  <!-- COUNTER -->
-  <div class="card counter-card">
-    <div class="counter-inner">
-      <div>
-        <div class="big-num" id="bigNum">0</div>
-        <div class="big-unit">hari streak</div>
-      </div>
-      <div class="meta-stats">
-        <div>
-          <div class="ms-val" id="hoursVal">0</div>
-          <div class="ms-lbl">jam total</div>
-        </div>
-        <div>
-          <div class="ms-val" id="bestVal">0</div>
-          <div class="ms-lbl">best streak</div>
-        </div>
-      </div>
-    </div>
-    <div class="start-bar">
-      <div class="start-lbl">Mulai: <strong id="startLbl">—</strong></div>
-    </div>
+  <!-- MONTHLY VIEW -->
+  <div class="month-view" id="monthView">
+    <div class="day-headers" id="dayHeaders"></div>
+    <div class="calendar-grid" id="calendarGrid"></div>
   </div>
 
-  <!-- NEXT MILESTONE -->
-  <div class="next-ms-card">
-    <div class="nms-label">Next Milestone</div>
-    <div class="nms-row">
-      <div class="nms-name" id="nmsName">—</div>
-      <div class="nms-days" id="nmsDays">—</div>
+  <!-- WEEKLY VIEW -->
+  <div class="week-view" id="weekView">
+    <div class="week-row" id="weekRow"></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Streak Saat Ini</div>
+      <div class="stat-value" id="statCurrent">0</div>
     </div>
-    <div class="prog-track"><div class="prog-fill" id="nmsFill" style="width:0%"></div></div>
-  </div>
-
-  <!-- MILESTONES -->
-  <div class="sec-label">Milestones</div>
-  <div class="ms-list" id="msList"></div>
-
-  <div class="quote-wrap">
-    <div class="quote-txt" id="quoteEl"></div>
-  </div>
-</div>
-
-<!-- MODAL -->
-<div class="overlay" id="overlay">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div class="sheet-title">Set Tanggal Mulai</div>
-    <div class="sheet-sub">Pilih tanggal pertama kamu mulai streak ini. Kalau baru mulai hari ini, pilih hari ini aja.</div>
-    <input type="date" class="date-input" id="dateInput">
-    <div class="sheet-btns">
-      <button class="s-btn pri" onclick="saveDate()">Simpan</button>
-      <button class="s-btn sec" onclick="closeModal()">Batal</button>
+    <div class="stat-card">
+      <div class="stat-label">Streak Terpanjang</div>
+      <div class="stat-value" id="statBest">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Hari Selesai</div>
+      <div class="stat-value" id="statTotal">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Bulan Ini</div>
+      <div class="stat-value" id="statMonth">0</div>
     </div>
   </div>
-</div>
 
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <span class="t-ico" id="tIco">✓</span>
-  <span id="tMsg">Check in berhasil!</span>
+  <div class="hint">↑ Klik tanggal untuk menandai selesai &mdash; angka akan tercoret</div>
 </div>
 
 <script>
-const MILESTONES = [
-  {days:2,  title:'Awal Mula',      badge:'🌱',desc:'Langkah pertama diambil'},
-  {days:3,  title:'Tiga Hari',       badge:'✊',desc:'Urge pertama dikalahkan'},
-  {days:5,  title:'Lima Hari',       badge:'⚡',desc:'Momentum terbentuk'},
-  {days:7,  title:'Satu Minggu',     badge:'🔥',desc:'Minggu pertama selesai'},
-  {days:14, title:'Dua Minggu',      badge:'💪',desc:'Kebiasaan mulai berubah'},
-  {days:21, title:'Habit Loop',      badge:'🧠',desc:'21 hari, habit terbentuk'},
-  {days:30, title:'Satu Bulan',      badge:'🥈',desc:'Silver milestone'},
-  {days:45, title:'45 Hari',         badge:'⚔️',desc:'Warrior mindset'},
-  {days:60, title:'Dua Bulan',       badge:'🏅',desc:'Konsisten bro'},
-  {days:90, title:'90 Hari',         badge:'🏆',desc:'The real deal'},
-  {days:120,title:'Empat Bulan',     badge:'💎',desc:'Diamond tier'},
-  {days:180,title:'Setengah Tahun',  badge:'👑',desc:'Legenda'},
-  {days:365,title:'Satu Tahun',      badge:'🌟',desc:'GOAT status'},
-];
+const DAYS_ID = ['MIN','SEN','SEL','RAB','KAM','JUM','SAB'];
+const MONTHS_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
-const QUOTES = [
-  'Disiplin adalah jembatan antara tujuan dan pencapaian.',
-  'Urge itu seperti gelombang — datang, lalu pergi. Kamu lebih kuat.',
-  'Setiap hari yang kamu tahan adalah versi baru yang lebih baik.',
-  'Otakmu sedang rewire. Prosesnya nyata. Terus.',
-  'Satu keputusan kecil hari ini mengubah segalanya besok.',
-];
+let markedDays = JSON.parse(localStorage.getItem('dbtc_marked') || '{}');
+let currentView = 'monthly';
+let today = new Date();
+let cursor = new Date(today.getFullYear(), today.getMonth(), 1);
+let weekCursor = getMonday(today);
 
-let startDate = null;
-let bestStreak = 0;
-let checkedInDates = new Set();
-let shownMilestones = new Set();
-let calMonth = new Date();
-let view = 'week';
-
-const ds = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-const todayStr = () => ds(new Date());
-
-function load() {
-  const sd = localStorage.getItem('c_start');
-  if (sd) { startDate = new Date(sd); startDate.setHours(0,0,0,0); }
-  bestStreak = parseInt(localStorage.getItem('c_best')||'0');
-  const ci = localStorage.getItem('c_ci'); if (ci) checkedInDates = new Set(JSON.parse(ci));
-  const sm = localStorage.getItem('c_ms'); if (sm) shownMilestones = new Set(JSON.parse(sm));
+function getMonday(d) {
+  const date = new Date(d);
+  const day = date.getDay();
+  const diff = (day === 0) ? -6 : 1 - day;
+  date.setDate(date.getDate() + diff);
+  date.setHours(0,0,0,0);
+  return date;
 }
 
-function save() {
-  if (startDate) localStorage.setItem('c_start', startDate.toISOString());
-  localStorage.setItem('c_best', bestStreak);
-  localStorage.setItem('c_ci', JSON.stringify([...checkedInDates]));
-  localStorage.setItem('c_ms', JSON.stringify([...shownMilestones]));
+function dateKey(y, m, d) {
+  return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 }
 
-function getDays() {
-  if (!startDate) return 0;
-  const n = new Date(); n.setHours(0,0,0,0);
-  return Math.max(0, Math.floor((n - startDate) / 86400000));
-}
-function getHours() {
-  if (!startDate) return 0;
-  return Math.max(0, Math.floor((Date.now() - startDate) / 3600000));
+function todayKey() {
+  return dateKey(today.getFullYear(), today.getMonth(), today.getDate());
 }
 
-function isChainDay(dateStr) {
-  if (!startDate) return false;
-  const d = new Date(dateStr); d.setHours(0,0,0,0);
-  const sd = new Date(startDate);
-  const td = new Date(); td.setHours(0,0,0,0);
-  return d >= sd && d <= td;
+function isFuture(y, m, d) {
+  const t = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const cell = new Date(y, m, d);
+  return cell > t;
 }
 
-function getMilestoneDays() {
-  const s = new Set();
-  if (!startDate) return s;
-  MILESTONES.forEach(m => {
-    const md = new Date(startDate);
-    md.setDate(md.getDate() + m.days);
-    s.add(ds(md));
+function isToday(y, m, d) {
+  return y === today.getFullYear() && m === today.getMonth() && d === today.getDate();
+}
+
+function toggleDay(key) {
+  if (markedDays[key]) {
+    delete markedDays[key];
+  } else {
+    markedDays[key] = true;
+  }
+  localStorage.setItem('dbtc_marked', JSON.stringify(markedDays));
+  render();
+}
+
+function calcStats() {
+  const keys = Object.keys(markedDays).filter(k => markedDays[k]).sort();
+  const total = keys.length;
+  let best = 0, current = 0, streak = 0;
+  let prev = null;
+  for (let k of keys) {
+    if (prev) {
+      const d1 = new Date(prev); const d2 = new Date(k);
+      const diff = (d2 - d1) / 86400000;
+      if (diff === 1) { streak++; } else { streak = 1; }
+    } else { streak = 1; }
+    if (streak > best) best = streak;
+    prev = k;
+  }
+  const tk = todayKey();
+  const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
+  const yk = dateKey(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
+  if (markedDays[tk]) {
+    let cur = 1, d = new Date(today);
+    while (true) {
+      d.setDate(d.getDate()-1);
+      const k2 = dateKey(d.getFullYear(), d.getMonth(), d.getDate());
+      if (markedDays[k2]) { cur++; } else break;
+    }
+    current = cur;
+  } else if (markedDays[yk]) {
+    let cur = 1, d = new Date(yesterday);
+    while (true) {
+      d.setDate(d.getDate()-1);
+      const k2 = dateKey(d.getFullYear(), d.getMonth(), d.getDate());
+      if (markedDays[k2]) { cur++; } else break;
+    }
+    current = cur;
+  }
+  const monthKeys = keys.filter(k => {
+    const p = k.split('-');
+    return parseInt(p[0]) === today.getFullYear() && parseInt(p[1])-1 === today.getMonth();
   });
-  return s;
+  return { total, best, current, month: monthKeys.length };
 }
 
-function renderAll() {
-  const days = getDays();
-  if (days > bestStreak) { bestStreak = days; save(); }
-
-  document.getElementById('bigNum').textContent = days;
-  document.getElementById('hoursVal').textContent = getHours();
-  document.getElementById('bestVal').textContent = bestStreak;
-  document.getElementById('streakPill').textContent = days + 'h';
-
-  document.getElementById('startLbl').textContent = startDate
-    ? startDate.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}) : '—';
-
-  const today = todayStr();
-  const checked = checkedInDates.has(today);
-  document.getElementById('ciDot').className = 'ci-dot' + (checked ? ' on' : '');
-  document.getElementById('ciTxt').className = 'ci-txt' + (checked ? ' on' : '');
-  document.getElementById('ciTxt').textContent = checked ? 'Sudah check in ✓' : 'Belum check in hari ini';
-  const cb = document.getElementById('ciBtn');
-  cb.className = 'ci-btn ' + (checked ? 'done' : 'go');
-  cb.textContent = checked ? 'Done ✓' : '✓ Check In';
-
-  renderCal();
-  renderNext(days);
-  renderMs(days);
-  checkToast(days);
-}
-
-const LABELS = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
-
-function renderCal() {
-  document.getElementById('calLabels').innerHTML = LABELS.map(l=>`<div class="cl">${l}</div>`).join('');
-  view === 'week' ? renderWeek() : renderMonth();
-}
-
-function renderWeek() {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const dow = (today.getDay()+6)%7;
-  const mon = new Date(today); mon.setDate(today.getDate()-dow);
-  const msDays = getMilestoneDays();
-  let h = '';
-  for (let i=0;i<7;i++) {
-    const d = new Date(mon); d.setDate(mon.getDate()+i);
-    const dstr = ds(d);
-    const isToday = dstr === todayStr();
-    const inChain = isChainDay(dstr);
-    const isFuture = d > today;
-    const isMs = msDays.has(dstr) && inChain;
-    let cls = 'cc in';
-    if (inChain) cls += ' chain';
-    if (isMs) cls += ' ms-day';
-    if (isToday) cls += ' today';
-    if (isFuture) cls += ' fut';
-    h += `<div class="${cls}">${!inChain ? d.getDate() : ''}</div>`;
-  }
-  document.getElementById('calGrid').innerHTML = h;
-}
-
-function renderMonth() {
-  const yr = calMonth.getFullYear(), mo = calMonth.getMonth();
-  document.getElementById('monthLbl').textContent =
-    calMonth.toLocaleDateString('id-ID',{month:'long',year:'numeric'}).toUpperCase();
-  const today = new Date(); today.setHours(0,0,0,0);
-  const firstDay = new Date(yr,mo,1);
-  const off = (firstDay.getDay()+6)%7;
-  const dim = new Date(yr,mo+1,0).getDate();
-  const prev = new Date(yr,mo,0).getDate();
-  const msDays = getMilestoneDays();
-  let h = '';
-  for (let i=0;i<off;i++) h += `<div class="cc dim">${prev-off+i+1}</div>`;
-  for (let d=1;d<=dim;d++) {
-    const cd = new Date(yr,mo,d);
-    const dstr = ds(cd);
-    const isToday = dstr===todayStr();
-    const inChain = isChainDay(dstr);
-    const isFuture = cd>today;
-    const isMs = msDays.has(dstr) && inChain;
-    let cls='cc in';
-    if (inChain) cls+=' chain';
-    if (isMs) cls+=' ms-day';
-    if (isToday) cls+=' today';
-    if (isFuture) cls+=' fut';
-    h += `<div class="${cls}">${!inChain ? d : ''}</div>`;
-  }
-  const total = off+dim, rem = total%7===0?0:7-(total%7);
-  for (let d=1;d<=rem;d++) h += `<div class="cc dim">${d}</div>`;
-  document.getElementById('calGrid').innerHTML = h;
-}
-
-function renderNext(days) {
-  const next = MILESTONES.find(m=>m.days>days);
-  if (!next) {
-    document.getElementById('nmsName').textContent='🌟 Semua milestone tercapai!';
-    document.getElementById('nmsDays').textContent='';
-    document.getElementById('nmsFill').style.width='100%';
-    return;
-  }
-  const prev = [...MILESTONES].reverse().find(m=>m.days<=days);
-  const from = prev?prev.days:0;
-  const pct = Math.round(((days-from)/(next.days-from))*100);
-  document.getElementById('nmsName').textContent=`${next.badge} ${next.title}`;
-  document.getElementById('nmsDays').textContent=`${next.days-days} hari lagi`;
-  document.getElementById('nmsFill').style.width=Math.min(100,pct)+'%';
-}
-
-function renderMs(days) {
-  const next = MILESTONES.find(m=>m.days>days);
-  document.getElementById('msList').innerHTML = MILESTONES.map(m=>{
-    const done=days>=m.days, isNext=next&&next.days===m.days;
-    return `<div class="ms-item${done?' done':''}${isNext?' next':''}">
-      <div class="ms-ico">${m.badge}</div>
-      <div class="ms-txt"><div class="ms-t">${m.title}</div><div class="ms-d">${m.desc}</div></div>
-      <div class="ms-n">${m.days}h</div>
-      <div class="ms-ck ${done?'y':'n'}">${done?'✓':''}</div>
+function renderMonthly() {
+  const year = cursor.getFullYear(), month = cursor.getMonth();
+  document.getElementById('navLabel').textContent = `${MONTHS_ID[month]} ${year}`;
+  const headers = document.getElementById('dayHeaders');
+  headers.innerHTML = DAYS_ID.map(d => `<div class="day-header">${d}</div>`).join('');
+  const grid = document.getElementById('calendarGrid');
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  let html = '';
+  for (let i = 0; i < firstDay; i++) html += `<div class="day-cell empty"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = dateKey(year, month, d);
+    const done = !!markedDays[key];
+    const future = isFuture(year, month, d);
+    const tod = isToday(year, month, d);
+    let cls = 'day-cell';
+    if (done) cls += ' done';
+    if (future) cls += ' future';
+    if (tod) cls += ' today';
+    const onclick = future ? '' : `onclick="toggleDay('${key}')"`;
+    const dot = tod ? `<div class="today-dot"></div>` : '';
+    html += `<div class="${cls}" ${onclick}>
+      <div class="strikethrough"></div>
+      <span class="day-num">${d}</span>
+      ${dot}
     </div>`;
-  }).join('');
+  }
+  grid.innerHTML = html;
 }
 
-function checkToast(days) {
-  const hit = MILESTONES.find(m=>m.days===days&&!shownMilestones.has(m.days));
-  if (hit) { shownMilestones.add(hit.days); save(); showToast(hit.badge,`${hit.title} tercapai!`); }
+function renderWeekly() {
+  const row = document.getElementById('weekRow');
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(weekCursor);
+    d.setDate(d.getDate() + i);
+    const key = dateKey(d.getFullYear(), d.getMonth(), d.getDate());
+    const done = !!markedDays[key];
+    const future = isFuture(d.getFullYear(), d.getMonth(), d.getDate());
+    const tod = isToday(d.getFullYear(), d.getMonth(), d.getDate());
+    let cls = 'week-cell';
+    if (done) cls += ' done';
+    if (future) cls += ' future';
+    if (tod) cls += ' today';
+    const onclick = future ? '' : `onclick="toggleDay('${key}')"`;
+    const weekStart = getMonday(weekCursor);
+    const weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate()+6);
+    const dayName = DAYS_ID[d.getDay()];
+    html += `<div class="${cls}" ${onclick}>
+      <div class="week-day-name">${dayName}</div>
+      <div style="position:relative">
+        <div class="week-date-num">${d.getDate()}</div>
+        <div class="week-strike"></div>
+      </div>
+      <div class="week-check">${done ? '✓' : ''}</div>
+    </div>`;
+  }
+  const ws = new Date(weekCursor);
+  const we = new Date(weekCursor); we.setDate(we.getDate()+6);
+  const sameMonth = ws.getMonth() === we.getMonth();
+  const label = sameMonth
+    ? `${ws.getDate()}–${we.getDate()} ${MONTHS_ID[ws.getMonth()]} ${ws.getFullYear()}`
+    : `${ws.getDate()} ${MONTHS_ID[ws.getMonth()]} – ${we.getDate()} ${MONTHS_ID[we.getMonth()]} ${we.getFullYear()}`;
+  document.getElementById('navLabel').textContent = label;
+  row.innerHTML = html;
 }
 
-function doCheckIn() {
-  const today = todayStr();
-  if (checkedInDates.has(today)) return;
-  checkedInDates.add(today);
-  if (!startDate) { startDate=new Date(); startDate.setHours(0,0,0,0); }
-  save(); renderAll();
-  showToast('✓','Check in berhasil! Keep going.');
+function renderStats() {
+  const s = calcStats();
+  document.getElementById('streakCount').textContent = s.current;
+  document.getElementById('statCurrent').textContent = s.current;
+  document.getElementById('statBest').textContent = s.best;
+  document.getElementById('statTotal').textContent = s.total;
+  document.getElementById('statMonth').textContent = s.month;
+}
+
+function render() {
+  if (currentView === 'monthly') renderMonthly();
+  else renderWeekly();
+  renderStats();
 }
 
 function setView(v) {
-  view = v;
-  document.getElementById('togWeek').className='tog'+(v==='week'?' on':'');
-  document.getElementById('togMonth').className='tog'+(v==='month'?' on':'');
-  document.getElementById('monthNav').className='month-nav'+(v==='month'?' show':'');
-  calMonth = new Date();
-  renderCal();
+  currentView = v;
+  document.getElementById('monthView').classList.toggle('hidden', v !== 'monthly');
+  document.getElementById('weekView').classList.toggle('visible', v === 'weekly');
+  document.getElementById('btnMonthly').classList.toggle('active', v === 'monthly');
+  document.getElementById('btnWeekly').classList.toggle('active', v === 'weekly');
+  render();
 }
 
-function changeMonth(d) { calMonth.setMonth(calMonth.getMonth()+d); renderCal(); }
-
-function openModal() {
-  if (startDate) return;
-  document.getElementById('dateInput').value = ds(new Date());
-  document.getElementById('overlay').classList.add('open');
-}
-function closeModal() { document.getElementById('overlay').classList.remove('open'); }
-function saveDate() {
-  const v = document.getElementById('dateInput').value; if (!v) return;
-  startDate=new Date(v); startDate.setHours(0,0,0,0);
-  save(); closeModal(); renderAll();
+function navigate(dir) {
+  if (currentView === 'monthly') {
+    cursor.setMonth(cursor.getMonth() + dir);
+  } else {
+    weekCursor.setDate(weekCursor.getDate() + dir * 7);
+  }
+  render();
 }
 
-document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeModal();});
-
-let tTimer;
-function showToast(ico,msg) {
-  clearTimeout(tTimer);
-  document.getElementById('tIco').textContent=ico;
-  document.getElementById('tMsg').textContent=msg;
-  const t=document.getElementById('toast');
-  t.classList.add('show');
-  tTimer=setTimeout(()=>t.classList.remove('show'),3200);
-}
-
-document.getElementById('quoteEl').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
-
-load(); renderAll();
-if (!startDate) setTimeout(openModal,700);
-setInterval(renderAll,60000);
+render();
 </script>
 </body>
 </html>
